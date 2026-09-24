@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cellular Respiration: CAST-Style Practice Task</title>
+<style>
+:root{
+ --navy:#17365d; --blue:#2a6fb5; --pale:#eef4fa; --line:#c5d3e2; --ink:#1c2733; --muted:#586878;
+ --ok:#1b7f4b; --okbg:#e6f4ec; --bad:#b3261e; --badbg:#fbeceb; --flag:#d99a00; --paper:#fff; --hl:#fff3c4;
+ --fs:17px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);background:#dfe7f0;font-size:var(--fs);line-height:1.45}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+
+.top{background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;gap:12px}
+.top h1{font-size:1.05rem;margin:0;font-weight:600;letter-spacing:.2px}
+.top small{display:block;font-weight:400;color:#b8cbe2;font-size:.78rem}
+.tools button{background:transparent;color:#fff;border:1px solid #6d8bb0;border-radius:4px;padding:3px 10px;margin-left:6px}
+.tools button:hover{background:#25497a}
+
+#root{height:calc(100% - 58px)}
+
+.screen{max-width:860px;margin:26px auto;background:var(--paper);border:1px solid var(--line);padding:30px 36px;border-radius:4px}
+.screen h2{margin:0 0 6px;color:var(--navy);font-size:1.6rem}
+.screen h3{color:var(--navy);margin:22px 0 6px;font-size:1.1rem}
+.phen{background:var(--pale);border-left:6px solid var(--blue);padding:14px 18px;margin:16px 0}
+.phen b{color:var(--navy)}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:4px;padding:10px 22px;font-weight:600}
+.btn:hover{background:#215c98}
+.btn.ghost{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.ghost:hover{background:var(--pale)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.namebox{margin:14px 0}
+.namebox input{font:inherit;padding:8px 10px;border:1.5px solid #8ea4bc;border-radius:4px;width:280px;max-width:100%}
+.namebox .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.namebox .fld{display:flex;flex-direction:column;gap:4px}
+.namebox .fld label{font-size:.85rem;color:var(--muted)}
+.namebox .fld input{width:200px}
+.namebox .fld.pd input{width:80px}
+.namebox .err{color:var(--bad);font-size:.88rem;margin-top:8px;display:none}
+.sheetbox{font-size:.9rem;color:var(--muted);margin-top:6px}
+
+.app{display:grid;grid-template-columns:1.12fr 1fr;height:calc(100% - 62px)}
+.stim,.qp{overflow:auto;padding:0}
+.stim{background:#f6f9fc;border-right:3px solid var(--navy)}
+.qp{background:var(--paper)}
+.tabs{display:flex;gap:4px;padding:8px 12px 0;background:#e3ecf5;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line)}
+.tab{border:1px solid var(--line);border-bottom:none;background:#cfdcea;color:var(--navy);padding:7px 14px;border-radius:5px 5px 0 0;font-weight:600;font-size:.9rem}
+.tab[aria-selected="true"]{background:#fff;border-color:var(--navy);border-bottom:2px solid #fff;margin-bottom:-1px}
+.tabbody{padding:18px 22px 40px}
+.tabbody h2{font-size:1.1rem;color:var(--navy);margin:0 0 8px}
+.passage p{font-family:Georgia,"Times New Roman",serif;font-size:1.02em;line-height:1.62;margin:0 0 12px;max-width:66ch}
+.passage mark{background:var(--hl)}
+.cap{font-size:.85rem;color:var(--muted);margin-top:6px}
+figure{margin:0}
+svg text{font-family:"Segoe UI",Helvetica,Arial,sans-serif}
+table.data{border-collapse:collapse;width:100%;background:#fff;font-size:.93rem;margin:6px 0 16px}
+table.data th,table.data td{border:1px solid #9db2c9;padding:6px 9px;text-align:left;vertical-align:top}
+table.data th{background:#dbe6f2;color:var(--navy)}
+
+.qbody{padding:18px 24px 40px}
+.qnum{font-weight:700;color:#fff;background:var(--navy);display:inline-block;padding:2px 10px;border-radius:3px;margin-right:8px}
+.qtype{font-size:.82rem;color:var(--muted);margin:4px 0 10px}
+.prompt{font-size:1.02em;margin:10px 0 14px}
+.hint{background:var(--hl);border:1px solid #e6cf7a;border-radius:4px;padding:6px 10px;font-size:.88rem;margin-bottom:12px}
+label.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid #b7c7d9;border-radius:6px;padding:10px 12px;margin:8px 0;cursor:pointer;background:#fff}
+label.opt:hover{background:var(--pale)}
+label.opt.sel{border-color:var(--blue);background:#e4effb}
+label.opt input{margin-top:5px;transform:scale(1.2)}
+.cerbox{margin:12px 0}
+.cerbox label{font-weight:700;color:var(--navy);display:block;margin-bottom:3px}
+.cerbox textarea{width:100%;font:inherit;min-height:88px;padding:8px 10px;border:1.5px solid #8ea4bc;border-radius:4px;resize:vertical}
+.cerbox .starter{font-size:.8rem;color:var(--muted);margin-bottom:4px;font-style:italic}
+
+.modes{display:flex;gap:6px;margin:4px 0 10px;flex-wrap:wrap}
+.mode{border:1.5px solid var(--navy);background:#fff;color:var(--navy);padding:6px 18px;border-radius:20px;font-weight:600}
+.mode.on{background:var(--navy);color:#fff}
+.viewbox{background:#fff;border:2px solid var(--navy);border-radius:4px;padding:6px}
+.simread{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.simread div{background:#fff;border:1px solid var(--line);border-radius:5px;padding:6px 8px;text-align:center}
+.simread b{display:block;font-size:1.1rem;color:var(--navy)}
+.simread span{font-size:.75rem;color:var(--muted)}
+.status{margin:8px 0;padding:8px 12px;background:var(--hl);border:1px solid #e6cf7a;border-radius:4px;font-weight:600;color:#3d3200}
+.formula{background:var(--pale);border-left:6px solid var(--blue);padding:10px 14px;margin:8px 0 14px}
+
+.foot{height:62px;background:#fff;border-top:3px solid var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.chip{width:34px;height:34px;border-radius:50%;border:2px solid #8ea4bc;background:#fff;color:var(--navy);font-weight:700;position:relative;padding:0}
+.chip.done{background:#cfe3f7;border-color:var(--blue)}
+.chip.cur{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip.flag::after{content:"";position:absolute;top:-4px;right:-4px;width:12px;height:12px;background:var(--flag);border:2px solid #fff;border-radius:50%}
+.flagbtn{background:#fff;border:1.5px solid var(--flag);color:#7a5600;border-radius:4px;padding:6px 12px;font-weight:600}
+.flagbtn.on{background:var(--flag);color:#fff}
+
+.rvlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}
+.rvitem{border:1.5px solid #8ea4bc;border-radius:6px;padding:10px;background:#fff;text-align:left}
+.rvitem.done{background:#e4effb;border-color:var(--blue)}
+.rvitem.todo{background:#fff8e1;border-color:var(--flag)}
+.rvitem b{display:block;color:var(--navy)}
+.score{font-size:2.3rem;font-weight:700;color:var(--navy)}
+.res{border:1.5px solid var(--line);border-left-width:8px;border-radius:5px;padding:12px 16px;margin:14px 0;background:#fff}
+.res.good{border-left-color:var(--ok)}
+.res.miss{border-left-color:var(--bad)}
+.res.self{border-left-color:var(--blue)}
+.res h4{margin:0 0 6px;color:var(--navy)}
+.tag{font-size:.8rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px}
+.tag.good{background:var(--okbg);color:var(--ok)}
+.tag.miss{background:var(--badbg);color:var(--bad)}
+.model{background:var(--pale);border-radius:5px;padding:10px 14px;margin-top:8px;font-size:.95rem}
+.resp{white-space:pre-wrap;background:#fafafa;border:1px dashed #98a9bb;padding:6px 10px;border-radius:4px;margin:4px 0 8px;font-size:.95rem}
+.checks label{display:block;margin:4px 0}
+.calcrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.calcrow:last-child{border-bottom:none}
+.calcrow .lab{flex:1;min-width:220px}
+.calcrow input{width:90px;font:inherit;text-align:center;padding:6px;border:1.5px solid #6f89a6;border-radius:4px}
+
+@media (max-width:900px){
+ .app{grid-template-columns:1fr;grid-template-rows:48% 52%}
+ .stim{border-right:none;border-bottom:3px solid var(--navy)}
+ .screen{margin:10px;padding:20px}
+ .foot{flex-wrap:wrap;height:auto;padding:6px}
+ #root{height:calc(100% - 58px)}
+}
+@media print{
+ body{background:#fff}
+ .top,.foot,.noprint{display:none!important}
+ #root{height:auto}
+ .screen{border:none;margin:0;max-width:none;padding:0}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+ <h1>Cellular Respiration<small>CAST-style practice task &bull; Glucose, mitochondria, aerobic &amp; anaerobic pathways &bull; 4 questions</small></h1>
+ <div class="tools noprint" aria-label="Text size">
+   <button onclick="fs(-1)" aria-label="Smaller text">A&minus;</button><button onclick="fs(1)" aria-label="Larger text">A+</button>
+ </div>
+</div>
+<div id="root"></div>
+
+<script src="sheets-config.js"></script>
+<script>
+const SHEETS_ACTIVITY_NAME="Cellular Respiration";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+/* =========================================================
+  QUESTIONS
+  ========================================================= */
+const QS=[
+{t:"mc",tab:"data",label:"Multiple choice",
+ prompt:"Which correctly matches each stage of aerobic cellular respiration to where it takes place in the cell?",
+ opts:[
+  ["a","Glycolysis \u2014 mitochondrial matrix; Krebs cycle \u2014 cytoplasm; Electron transport chain \u2014 cytoplasm"],
+  ["b","Glycolysis \u2014 cytoplasm; Krebs cycle \u2014 mitochondrial matrix; Electron transport chain \u2014 inner mitochondrial membrane"],
+  ["c","All three stages take place in the cytoplasm"],
+  ["d","All three stages take place in the mitochondrial matrix"]
+ ],correct:"b",
+ why:"Table 1 shows that glycolysis takes place in the cytoplasm (cytosol), outside the mitochondria \u2014 that's why it can still run even without oxygen. The Krebs cycle takes place in the mitochondrial matrix, and the electron transport chain is built into the inner mitochondrial membrane, where it uses oxygen as the final electron acceptor."},
+
+{t:"mc",tab:"sim",label:"Multiple choice",
+ prompt:"When oxygen is not available, a muscle cell still runs glycolysis, but the Krebs cycle and electron transport chain stop. Why does the cell then carry out lactic acid fermentation, even though fermentation makes no additional ATP?",
+ opts:[
+  ["a","Fermentation regenerates NAD+ so glycolysis can keep running and keep producing its small amount of ATP"],
+  ["b","Fermentation produces a large amount of extra ATP on its own"],
+  ["c","Fermentation delivers oxygen directly to the electron transport chain"],
+  ["d","Fermentation converts lactic acid back into glucose"]
+ ],correct:"a",
+ why:"Glycolysis needs a steady supply of NAD+ to keep breaking down glucose. Normally the electron transport chain regenerates that NAD+, but without oxygen the chain shuts down. Lactic acid fermentation converts pyruvate to lactic acid in a reaction that regenerates NAD+ from NADH \u2014 it doesn't add ATP itself, but it keeps glycolysis supplied so the cell can keep making its small, oxygen-independent amount of ATP."}
+,
+
+{t:"calc",tab:"graph",label:"Fill in the blank",
+ prompt:"Use Graph 1, Graph 2, and Graph 3 to answer each question. Enter a number.",
+ rows:[
+  {label:"On Graph 1, about how many ATP molecules does glycolysis produce (net) per glucose molecule?",key:2,tol:1,unit:"(ATP)"},
+  {label:"On Graph 1, about how many ATP molecules does the electron transport chain produce per glucose molecule?",key:32,tol:6,unit:"(ATP)"},
+  {label:"On Graph 2, about how many total ATP are produced per glucose molecule during aerobic respiration?",key:36,tol:6,unit:"(ATP)"},
+  {label:"On Graph 2, about how many total ATP are produced per glucose molecule during anaerobic (fermentation) respiration?",key:2,tol:1,unit:"(ATP)"},
+  {label:"On Graph 3, at about what temperature does the rate of cellular respiration peak?",key:37,tol:8,unit:"\u00b0C"}
+ ],
+ why:"Graph 1 breaks aerobic respiration down stage by stage: glycolysis nets only about 2 ATP, the Krebs cycle adds a small amount more, and the electron transport chain produces the large majority of the total \u2014 around 32 ATP \u2014 by far the biggest contributor. Graph 2 compares the two overall pathways: aerobic respiration (glycolysis + Krebs cycle + electron transport chain) yields roughly 36 ATP per glucose molecule, while anaerobic fermentation, which stops after glycolysis, yields only about 2. Graph 3 shows that, like other enzyme-driven processes, the rate of cellular respiration rises with temperature up to an optimum near normal body temperature, then falls sharply as heat starts to damage the enzymes involved."},
+
+{t:"cer",tab:"sim",label:"Constructed response (Claim, Evidence, Reasoning)",
+ prompt:"During an all-out sprint, your leg muscles run low on usable oxygen within seconds, yet they keep contracting for a while longer. Can a muscle cell keep producing ATP without oxygen, and if so, why can't it sustain hard exercise indefinitely that way? Use the Data tables and the Oxygen present / absent simulation to support your answer.",
+ starters:{c:"Without oxygen, a muscle cell ",e:"The Data table shows that ",r:"This happens because "},
+ model:{
+  c:"Without oxygen, a muscle cell can still produce a small amount of ATP through glycolysis and lactic acid fermentation, but it cannot sustain hard exercise indefinitely that way.",
+  e:"The Data table shows that glycolysis alone nets only about 2 ATP per glucose molecule, compared to roughly 36 ATP when the Krebs cycle and electron transport chain can also run with oxygen. The simulation shows that without oxygen, the cell shifts to lactic acid fermentation, which regenerates NAD+ so glycolysis can continue, but produces lactic acid as a byproduct and adds no extra ATP.",
+  r:"Because the anaerobic pathway makes so much less ATP per glucose molecule than the full aerobic pathway, a muscle cell has to break down glucose much faster to meet the same energy demand, and lactic acid builds up as a byproduct \u2014 both of which make this pathway impossible to sustain for very long."},
+ checks:["Claim: states that a muscle cell can make ATP without oxygen, but cannot sustain it for very long.",
+         "Evidence: cites the ATP totals from the Data table (about 2 vs. about 36) or the simulation's fermentation/lactic acid pathway.",
+         "Reasoning: explains that anaerobic respiration yields far less ATP per glucose and builds up lactic acid, so it can't be sustained the way aerobic respiration can."],
+ kw:{claim:[/without\s+oxygen|no\s+oxygen|anaerob/i,/(cannot|can't|can\s*not|not)\s+.*(sustain|keep|last|indefinite)/i],
+     evidence:[/2\s*atp|two\s*atp/i,/36|krebs|electron\s*transport/i,/lactic\s*acid|lactate/i,/nad/i],
+     reasoning:[/less\s*atp|fewer\s*atp|less\s*energy/i,/lactic\s*acid|build(s|\s*up)?/i]}}
+];
+
+/* =========================================================
+  STAGE DATA (for simulation "trace" mode)
+  ========================================================= */
+const STAGES=[
+{id:"glycolysis",name:"Glycolysis",loc:"Cytoplasm (cytosol)",inputs:"1 glucose (6-carbon)",outputs:"2 pyruvate, net 2 ATP, 2 NADH",o2:"Not required",
+ note:"Splits one glucose molecule into two smaller pyruvate molecules. This is the only stage that runs whether or not oxygen is available \u2014 it happens outside the mitochondria, in the cytoplasm."},
+{id:"krebs",name:"Krebs cycle (citric acid cycle)",loc:"Mitochondrial matrix",inputs:"Pyruvate (converted to acetyl-CoA) from glycolysis",outputs:"CO\u2082, ATP, NADH, FADH\u2082",o2:"Only runs when O\u2082 is available overall",
+ note:"Finishes breaking down the carbon skeleton from pyruvate, releasing CO\u2082 and loading up electron carriers (NADH and FADH\u2082) that feed the next stage."},
+{id:"etc",name:"Electron transport chain",loc:"Inner mitochondrial membrane",inputs:"NADH, FADH\u2082, O\u2082",outputs:"H\u2082O, the majority of the cell's ATP",o2:"Requires O\u2082 as the final electron acceptor",
+ note:"NADH and FADH\u2082 drop off electrons here. As electrons move down the chain, their energy is used to build most of the cell's ATP. Oxygen picks up the electrons at the very end, combining with H+ to form water \u2014 without oxygen, this stage stops completely."}
+];
+
+/* =========================================================
+  STATE
+  ========================================================= */
+let screen="intro",cur=0,tab="passage",ans={},flagged=new Set(),student={},selfChecks=[false,false,false],fsize=17,cerRevised=false;
+const sim={mode:"trace",stageIdx:0,o2:true};
+
+/* =========================================================
+  DRAWING HELPERS
+  ========================================================= */
+function arrowDefs(){
+return `<defs><marker id="arrD" markerWidth="9" markerHeight="9" refX="5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#33475b"/></marker></defs>`;
+}
+function diagramSVG(){
+const W=700,H=300;
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Diagram of the pathways of cellular respiration: glycolysis in the cytoplasm, then either the Krebs cycle and electron transport chain in the mitochondrion (with oxygen) or lactic acid fermentation in the cytoplasm (without oxygen)"><rect width="${W}" height="${H}" fill="#fff" stroke="#9db2c9"/>`;
+g+=`<rect x="20" y="20" width="150" height="70" rx="10" fill="#eef4fa" stroke="#33475b" stroke-width="2"/><text x="95" y="45" font-size="12.5" font-weight="700" text-anchor="middle" fill="#17365d">Glucose</text><text x="95" y="62" font-size="10.5" text-anchor="middle" fill="#33475b">(cytoplasm)</text>`;
+g+=`<rect x="220" y="20" width="170" height="70" rx="10" fill="#dde6f0" stroke="#33475b" stroke-width="2"/><text x="305" y="42" font-size="12.5" font-weight="700" text-anchor="middle" fill="#17365d">Glycolysis</text><text x="305" y="58" font-size="10.5" text-anchor="middle" fill="#33475b">2 pyruvate + 2 ATP</text><text x="305" y="72" font-size="10.5" text-anchor="middle" fill="#33475b">(no O\u2082 needed)</text>`;
+g+=`<line x1="170" y1="55" x2="220" y2="55" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrD)"/>`;
+g+=`<line x1="305" y1="90" x2="305" y2="120" stroke="#33475b" stroke-width="2.5"/>`;
+g+=`<text x="330" y="112" font-size="11" fill="#33475b">pyruvate</text>`;
+g+=`<line x1="305" y1="120" x2="150" y2="150" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrD)"/><text x="200" y="132" font-size="10.5" fill="#8a6a00">no O\u2082</text>`;
+g+=`<line x1="305" y1="120" x2="480" y2="150" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrD)"/><text x="400" y="132" font-size="10.5" fill="#1b5e20">with O\u2082</text>`;
+g+=`<rect x="40" y="150" width="220" height="90" rx="10" fill="#fbe6d4" stroke="#b5610e" stroke-width="2"/><text x="150" y="172" font-size="12.5" font-weight="700" text-anchor="middle" fill="#8a4308">Lactic acid fermentation</text><text x="150" y="188" font-size="10.5" text-anchor="middle" fill="#33475b">(cytoplasm)</text><text x="150" y="204" font-size="10.5" text-anchor="middle" fill="#33475b">Pyruvate \u2192 lactic acid</text><text x="150" y="219" font-size="10.5" text-anchor="middle" fill="#33475b">Regenerates NAD\u207A; \u2248 2 ATP total</text>`;
+g+=`<rect x="380" y="150" width="290" height="90" rx="10" fill="#dff2e0" stroke="#2c7a2c" stroke-width="2"/><text x="525" y="172" font-size="12.5" font-weight="700" text-anchor="middle" fill="#1b5e20">Krebs cycle + electron transport chain</text><text x="525" y="188" font-size="10.5" text-anchor="middle" fill="#33475b">(mitochondrial matrix + inner membrane)</text><text x="525" y="204" font-size="10.5" text-anchor="middle" fill="#33475b">Pyruvate + O\u2082 \u2192 CO\u2082 + H\u2082O</text><text x="525" y="219" font-size="10.5" text-anchor="middle" fill="#33475b">\u2248 36 ATP total</text>`;
+g+=arrowDefs();
+return g+`</svg>`;
+}
+function genChart(o){
+const W=o.w||600,H=o.h||300,L=60,R=18,T=18,B=48;
+const X=v=>L+(v-o.xmin)/(o.xmax-o.xmin)*(W-L-R),Y=v=>H-B-(v-o.ymin)/(o.ymax-o.ymin)*(H-T-B);
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${o.aria}"><rect width="${W}" height="${H}" fill="#fff" stroke="#9db2c9"/>`;
+for(let v=o.ymin;v<=o.ymax+1e-9;v+=o.ystep)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2eaf2"/><text x="${L-7}" y="${Y(v)+4}" font-size="11" text-anchor="end">${v}</text>`;
+for(let v=o.xmin;v<=o.xmax+1e-9;v+=o.xstep)g+=`<line x1="${X(v)}" x2="${X(v)}" y1="${T}" y2="${H-B}" stroke="#eef4fa"/><text x="${X(v)}" y="${H-B+16}" font-size="11" text-anchor="middle">${v}</text>`;
+g+=`<line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#33475b" stroke-width="2"/><line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" stroke="#33475b" stroke-width="2"/>`;
+g+=`<text x="${(L+W-R)/2}" y="${H-10}" font-size="12.5" font-weight="600" text-anchor="middle">${o.xlabel}</text>`;
+g+=`<text transform="translate(14 ${(T+H-B)/2}) rotate(-90)" font-size="12.5" font-weight="600" text-anchor="middle">${o.ylabel}</text>`;
+const pts=[];for(let v=o.xmin;v<=o.xmax+1e-9;v+=(o.xmax-o.xmin)/140)pts.push([v,o.fn(v)]);
+g+=`<polyline fill="none" stroke="${o.col}" stroke-width="3" points="${pts.map(p=>X(p[0]).toFixed(1)+","+Y(Math.max(o.ymin,Math.min(o.ymax,p[1]))).toFixed(1)).join(" ")}"/>`;
+return g+`</svg>`;
+}
+function barChart(items,o){
+const W=o.w||600,H=o.h||320,L=60,R=18,T=24,B=56;
+const ymax=o.ymax;
+const Y=v=>H-B-(v/ymax)*(H-T-B);
+const bw=(W-L-R)/items.length;
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${o.aria}"><rect width="${W}" height="${H}" fill="#fff" stroke="#9db2c9"/>`;
+for(let v=0;v<=ymax+1e-9;v+=o.ystep)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e2eaf2"/><text x="${L-7}" y="${Y(v)+4}" font-size="11" text-anchor="end">${v}</text>`;
+g+=`<line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#33475b" stroke-width="2"/><line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" stroke="#33475b" stroke-width="2"/>`;
+g+=`<text transform="translate(16 ${(T+H-B)/2}) rotate(-90)" font-size="12.5" font-weight="600" text-anchor="middle">${o.ylabel}</text>`;
+items.forEach((it,i)=>{
+ const cx=L+(i+0.5)*bw,bh=(it[1]/ymax)*(H-T-B),bwidth=Math.min(78,bw*0.6);
+ g+=`<rect x="${(cx-bwidth/2).toFixed(1)}" y="${Y(it[1]).toFixed(1)}" width="${bwidth.toFixed(1)}" height="${bh.toFixed(1)}" fill="${it[2]}" opacity=".88"/>`;
+ g+=`<text x="${cx}" y="${(Y(it[1])-8).toFixed(1)}" font-size="13" font-weight="700" text-anchor="middle">${it[1]}</text>`;
+ String(it[0]).split("\n").forEach((line,li)=>{g+=`<text x="${cx}" y="${H-B+18+li*13}" font-size="11" text-anchor="middle">${line}</text>`;});
+});
+return g+`</svg>`;
+}
+function stagesBarSVG(){
+return barChart([["Glycolysis",2,"#2a6fb5"],["Krebs\ncycle",2,"#3a9a4a"],["Electron\ntransport\nchain",32,"#b5610e"]],
+ {ymax:40,ystep:10,ylabel:"ATP produced per glucose",aria:"ATP produced by each stage of aerobic respiration: glycolysis about 2, Krebs cycle about 2, electron transport chain about 32"});
+}
+function pathwayBarSVG(){
+return barChart([["Aerobic\nrespiration",36,"#2c7a2c"],["Anaerobic\n(fermentation)",2,"#8a5fb0"]],
+ {ymax:40,ystep:10,ylabel:"Total ATP per glucose",aria:"Total ATP per glucose molecule: about 36 for aerobic respiration, about 2 for anaerobic fermentation"});
+}
+function tempGraphSVG(){
+return genChart({xmin:0,xmax:100,xstep:20,ymin:0,ymax:100,ystep:20,xlabel:"Temperature (\u00b0C)",ylabel:"Rate of cellular respiration",col:"#b5610e",
+ fn:x=>100*Math.exp(-Math.pow(x-37,2)/300),aria:"Rate of cellular respiration versus temperature: rate rises to a peak near 37 degrees Celsius, then falls sharply as heat damages enzymes"});
+}
+
+/* =========================================================
+  SIMULATION
+  ========================================================= */
+function stageSVG(s){
+const W=340,H=190;
+const locColor=s.id==="glycolysis"?"#eef4fa":s.id==="krebs"?"#fbe6d4":"#e6dcf3";
+const locStroke=s.id==="glycolysis"?"#33475b":s.id==="krebs"?"#b5610e":"#6a3fa0";
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${s.name}, located in the ${s.loc}"><rect width="${W}" height="${H}" fill="#fff" stroke="#9db2c9"/>`;
+g+=`<rect x="90" y="30" width="160" height="130" rx="14" fill="${locColor}" stroke="${locStroke}" stroke-width="3"/>`;
+g+=`<text x="170" y="20" font-size="12.5" font-weight="700" text-anchor="middle" fill="#17365d">${s.name}</text>`;
+g+=`<text x="170" y="55" font-size="11" text-anchor="middle" fill="#33475b">${s.loc}</text>`;
+g+=`<line x1="30" y1="95" x2="90" y2="95" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrS)"/>`;
+g+=`<line x1="250" y1="95" x2="310" y2="95" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrS)"/>`;
+g+=`<text x="170" y="95" font-size="10.5" text-anchor="middle" fill="#33475b">O\u2082 needed: ${s.o2}</text>`;
+g+=`<defs><marker id="arrS" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#33475b"/></marker></defs>`;
+return g+`</svg>`;
+}
+function pathwaySVG(o2){
+const W=340,H=190;
+let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Pathway taken when oxygen is ${o2?"present":"absent"}"><rect width="${W}" height="${H}" fill="#fff" stroke="#9db2c9"/>`;
+g+=`<rect x="20" y="20" width="110" height="55" rx="8" fill="#eef4fa" stroke="#33475b" stroke-width="2"/><text x="75" y="42" font-size="11.5" font-weight="700" text-anchor="middle" fill="#17365d">Glycolysis</text><text x="75" y="58" font-size="10" text-anchor="middle" fill="#33475b">2 ATP</text>`;
+if(o2){
+ g+=`<line x1="130" y1="47" x2="185" y2="47" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrS2)"/>`;
+ g+=`<rect x="185" y="15" width="135" height="65" rx="10" fill="#dff2e0" stroke="#2c7a2c" stroke-width="2.5"/><text x="252" y="38" font-size="11.5" font-weight="700" text-anchor="middle" fill="#1b5e20">Krebs + ETC</text><text x="252" y="54" font-size="10" text-anchor="middle" fill="#33475b">\u2248 34 more ATP</text><text x="252" y="68" font-size="10" text-anchor="middle" fill="#33475b">CO\u2082 + H\u2082O out</text>`;
+ g+=`<text x="170" y="120" font-size="13" font-weight="700" text-anchor="middle" fill="#1b5e20">\u2248 36 ATP total</text>`;
+} else {
+ g+=`<line x1="75" y1="75" x2="75" y2="110" stroke="#33475b" stroke-width="2.5" marker-end="url(#arrS2)"/>`;
+ g+=`<rect x="15" y="110" width="200" height="60" rx="10" fill="#fbe6d4" stroke="#b5610e" stroke-width="2.5"/><text x="115" y="133" font-size="11.5" font-weight="700" text-anchor="middle" fill="#8a4308">Lactic acid fermentation</text><text x="115" y="149" font-size="10" text-anchor="middle" fill="#33475b">regenerates NAD\u207A</text><text x="115" y="163" font-size="10" text-anchor="middle" fill="#33475b">no extra ATP</text>`;
+ g+=`<text x="270" y="140" font-size="13" font-weight="700" text-anchor="middle" fill="#8a4308">\u2248 2 ATP total</text>`;
+}
+g+=`<defs><marker id="arrS2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#33475b"/></marker></defs>`;
+return g+`</svg>`;
+}
+function setStage(i){sim.stageIdx=+i;setTab("sim");}
+function setO2(v){sim.o2=v;setTab("sim");}
+function simMode(m){sim.mode=m;setTab("sim");}
+function updateSim(){
+const v=$("#simview"),r=$("#simread"),st=$("#simstat");
+if(!v||!r)return;
+if(sim.mode==="trace"){
+ const s=STAGES[sim.stageIdx];
+ v.innerHTML=stageSVG(s);
+ r.innerHTML=`<div><b>${s.loc}</b><span>location</span></div><div><b>${s.o2}</b><span>oxygen needed?</span></div><div><b>${s.inputs}</b><span>inputs</span></div><div><b>${s.outputs}</b><span>outputs</span></div>`;
+ if(st)st.innerHTML=`<div class="status">${s.note}</div>`;
+} else {
+ v.innerHTML=pathwaySVG(sim.o2);
+ r.innerHTML=`<div><b>${sim.o2?"Present":"Absent"}</b><span>oxygen available?</span></div><div><b>${sim.o2?"\u2248 36 ATP":"\u2248 2 ATP"}</b><span>ATP per glucose</span></div>`;
+ if(st)st.innerHTML=`<div class="status">${sim.o2?"With oxygen available, pyruvate from glycolysis enters the mitochondrion for the Krebs cycle and electron transport chain, producing far more ATP and releasing CO\u2082 and H\u2082O.":"Without oxygen, the Krebs cycle and electron transport chain can't run. The cell relies on lactic acid fermentation to regenerate NAD\u207A so glycolysis can keep producing its small, steady supply of ATP \u2014 but lactic acid builds up as a byproduct."}</div>`;
+}
+}
+function simHTML(){
+const ctl=sim.mode==="trace"?
+ `<div class="modes" role="group" aria-label="Stage">${STAGES.map((s,i)=>`<button class="mode ${sim.stageIdx===i?"on":""}" onclick="setStage(${i})">${s.name}</button>`).join("")}</div>` :
+ `<div class="modes" role="group" aria-label="Oxygen"><button class="mode ${sim.o2?"on":""}" onclick="setO2(true)">Oxygen present</button><button class="mode ${!sim.o2?"on":""}" onclick="setO2(false)">Oxygen absent</button></div>`;
+const cap2=sim.mode==="trace"?"Step through each stage of aerobic respiration to see where it happens and what goes in and out.":"Toggle whether oxygen is available and see which pathway the cell takes.";
+return `<h2>Simulation: Cellular Respiration</h2>
+ <div class="modes" role="group" aria-label="Simulation mode"><button class="mode ${sim.mode==="trace"?"on":""}" onclick="simMode('trace')">Trace the stages</button><button class="mode ${sim.mode==="oxygen"?"on":""}" onclick="simMode('oxygen')">Oxygen present / absent</button></div>
+ <div class="viewbox" id="simview"></div>
+ <div class="simread" id="simread"></div>
+ <div id="simstat"></div>
+ ${ctl}
+ <p class="cap">${cap2}</p>`;
+}
+
+/* =========================================================
+  STIMULUS
+  ========================================================= */
+function stimHTML(){
+const tabs=[["passage","Passage"],["diagram","Diagram"],["graph","Graph"],["data","Data tables"],["sim","Simulation"]];
+let h=`<div class="tabs" role="tablist">`+tabs.map(t=>`<button class="tab" role="tab" aria-selected="${tab===t[0]}" onclick="setTab('${t[0]}')">${t[1]}</button>`).join("")+`</div><div class="tabbody">`;
+if(tab==="passage") h+=`
+ <div class="phen"><b>Phenomenon:</b> During an all-out sprint, your leg muscles run low on usable oxygen within seconds \u2014 yet they keep contracting for a while longer, and your legs burn and feel heavy afterward.</div>
+ <div class="passage">
+ <h2>Cellular Respiration: Breaking Down Glucose for ATP</h2>
+ <p>Nearly every cell breaks down <mark>glucose</mark> to release the energy stored in it as <mark>ATP</mark>, the molecule cells actually use to power their activities. The overall reaction is: glucose + oxygen \u2192 carbon dioxide + water + ATP. This happens in three connected stages: <mark>glycolysis</mark>, the <mark>Krebs cycle</mark>, and the <mark>electron transport chain</mark>.</p>
+ <p><mark>Glycolysis</mark> takes place in the cytoplasm, outside the mitochondria. It splits one glucose molecule into two smaller pyruvate molecules, producing a net of 2 ATP directly and loading a couple of electron carriers (NADH). Glycolysis does not require oxygen, so it can run whether or not oxygen is available.</p>
+ <p>If oxygen is available, pyruvate enters the <mark>mitochondria</mark> \u2014 the organelles where most of a cell's ATP is produced. In the <mark>mitochondrial matrix</mark>, the <mark>Krebs cycle</mark> finishes breaking down the carbon skeleton from pyruvate, releasing carbon dioxide and loading up more electron carriers (NADH and FADH\u2082). Those carriers then feed the <mark>electron transport chain</mark>, built into the inner mitochondrial membrane. As electrons move down the chain, their energy is used to build the large majority of the cell's ATP; oxygen picks up the electrons at the very end, combining with H\u207A to form water. Together, this <mark>aerobic</mark> pathway (glycolysis + Krebs cycle + electron transport chain) yields roughly 36 ATP per glucose molecule.</p>
+ <p>If oxygen is not available, the Krebs cycle and electron transport chain cannot run, so the cell relies on <mark>anaerobic</mark> respiration: glycolysis followed by <mark>fermentation</mark>. In muscle cells, this is <mark>lactic acid fermentation</mark>: pyruvate is converted into lactic acid (lactate). This reaction doesn't add any ATP by itself, but it regenerates the NAD\u207A that glycolysis needs to keep running, so the cell can keep producing its small, steady supply of about 2 ATP per glucose. (Yeast cells carry out a related process, alcoholic fermentation, producing ethanol and CO\u2082 instead of lactic acid \u2014 but the same basic idea applies: fermentation keeps glycolysis supplied with NAD\u207A when oxygen is scarce.)</p>
+ </div><div class="phen"><b>Real-world connection:</b> This is why sprinting hard for even 10\u201320 seconds can leave muscles feeling like they're \u201Cburning\u201D \u2014 the muscle cells have shifted heavily toward anaerobic glycolysis and lactic acid fermentation because oxygen delivery can't keep up with demand. Because that pathway makes so much less ATP per glucose molecule, and builds up lactic acid, it can't be sustained for very long; once oxygen delivery catches up (or the effort slows down), aerobic respiration takes back over.</div>
+ <div class="cap">Passage written for classroom use.</div>`;
+if(tab==="diagram") h+=`<figure><h2>Diagram 1: Aerobic and anaerobic pathways</h2>${diagramSVG()}<figcaption class="cap">Glycolysis always runs first, in the cytoplasm. With oxygen, pyruvate continues into the mitochondrion for the Krebs cycle and electron transport chain. Without oxygen, pyruvate is converted to lactic acid instead, regenerating NAD\u207A so glycolysis can continue.</figcaption></figure>`;
+if(tab==="graph") h+=`<figure><h2>Graph 1: ATP produced by each stage of aerobic respiration</h2>${stagesBarSVG()}<figcaption class="cap">Glycolysis and the Krebs cycle each contribute a small, roughly equal amount of ATP directly. The electron transport chain contributes the large majority of the total.</figcaption></figure>
+ <figure><h2>Graph 2: Total ATP yield \u2014 aerobic vs. anaerobic</h2>${pathwayBarSVG()}<figcaption class="cap">Aerobic respiration (using the Krebs cycle and electron transport chain) yields far more ATP per glucose molecule than anaerobic fermentation, which stops after glycolysis.</figcaption></figure>
+ <figure><h2>Graph 3: Rate of cellular respiration vs. temperature</h2>${tempGraphSVG()}<figcaption class="cap">Because cellular respiration depends on enzymes, its rate rises with temperature up to an optimum near normal body temperature, then falls sharply as higher heat damages (denatures) the enzymes.</figcaption></figure>`;
+if(tab==="data") h+=`
+ <h2>Table 1: Stages of aerobic cellular respiration</h2>
+ <table class="data"><tr><th>Stage</th><th>Location</th><th>Inputs</th><th>Outputs</th></tr>
+ <tr><td>Glycolysis</td><td>Cytoplasm (cytosol)</td><td>1 glucose</td><td>2 pyruvate, net 2 ATP, 2 NADH</td></tr>
+ <tr><td>Krebs cycle</td><td>Mitochondrial matrix</td><td>Pyruvate (as acetyl-CoA)</td><td>CO\u2082, ATP, NADH, FADH\u2082</td></tr>
+ <tr><td>Electron transport chain</td><td>Inner mitochondrial membrane</td><td>NADH, FADH\u2082, O\u2082</td><td>H\u2082O, the majority of the cell's ATP</td></tr>
+ </table>
+ <h2>Table 2: Aerobic respiration vs. anaerobic respiration (fermentation)</h2>
+ <table class="data"><tr><th></th><th>Aerobic respiration</th><th>Anaerobic respiration (fermentation)</th></tr>
+ <tr><td>Requires O\u2082?</td><td>Yes</td><td>No</td></tr>
+ <tr><td>Stages used</td><td>Glycolysis + Krebs cycle + electron transport chain</td><td>Glycolysis + fermentation only</td></tr>
+ <tr><td>Where it happens</td><td>Cytoplasm and mitochondria</td><td>Cytoplasm only</td></tr>
+ <tr><td>End product (in muscle/animal cells)</td><td>CO\u2082 + H\u2082O</td><td>Lactic acid (lactate)</td></tr>
+ <tr><td>ATP yield per glucose</td><td>\u2248 36 ATP</td><td>\u2248 2 ATP</td></tr>
+ </table>
+ <div class="formula"><b>Key relationship</b><br>Overall: glucose + O\u2082 \u2192 CO\u2082 + H\u2082O + ATP (aerobic, \u2248 36 ATP)<br>Without O\u2082: glucose \u2192 pyruvate \u2192 lactic acid + \u2248 2 ATP (anaerobic / fermentation)<br>Glycolysis always runs first; the Krebs cycle and electron transport chain only run with O\u2082.</div>`;
+if(tab==="sim") h+=simHTML();
+return h+`</div>`;
+}
+
+/* =========================================================
+  QUESTION RENDERING
+  ========================================================= */
+function isAnswered(i){const q=QS[i],a=ans[i];
+if(a===undefined||a===null)return false;
+if(q.t==="mc")return !!a;
+if(q.t==="calc")return q.rows.every((r,k)=>a[k]!==undefined&&String(a[k]).trim()!=="");
+if(q.t==="cer")return !!(a.c&&a.c.trim()!==q.starters.c.trim())||!!(a.e&&a.e.trim()!==q.starters.e.trim())||!!(a.r&&a.r.trim()!==q.starters.r.trim());
+return true;}
+function qHTML(i){
+const q=QS[i],a=ans[i];
+let h=`<div class="qbody"><div><span class="qnum">${i+1}</span><b>Question ${i+1} of ${QS.length}</b></div><div class="qtype">${q.label}</div><div class="prompt">${q.prompt}</div>`;
+if(q.t==="mc"){
+ h+=q.opts.map(o=>`<label class="opt ${a===o[0]?"sel":""}"><input type="radio" name="mcq${i}" value="${o[0]}" ${a===o[0]?"checked":""} onchange="setMC('${o[0]}')"> <span>${o[1]}</span></label>`).join("");
+}
+if(q.t==="calc"){
+ h+=`<div class="hint">Use the Graph tab \u2014 Graph 1 (stages), Graph 2 (pathways), and Graph 3 (temperature).</div>`+
+ q.rows.map((r,k)=>`<div class="calcrow"><div class="lab">${r.label}</div><input inputmode="decimal" aria-label="${r.label}" value="${a&&a[k]!==undefined?esc(a[k]):""}" oninput="setCalc(${k},this.value)"> <span class="cap">${r.unit}</span></div>`).join("");
+}
+if(q.t==="cer"){
+ const v=a||{c:q.starters.c,e:q.starters.e,r:q.starters.r};
+ h+=`<div class="hint">Use the <b>Data tables</b> and the <b>Oxygen present/absent simulation</b>. Finish each sentence starter in complete sentences.</div>
+ <div class="cerbox"><label for="cc">Claim</label><div class="starter">Sentence starter is already in the box \u2014 finish the thought.</div><textarea id="cc" oninput="setCER('c',this.value)">${esc(v.c)}</textarea></div>
+ <div class="cerbox"><label for="ce">Evidence</label><div class="starter">Sentence starter is already in the box \u2014 finish the thought.</div><textarea id="ce" oninput="setCER('e',this.value)">${esc(v.e)}</textarea></div>
+ <div class="cerbox"><label for="cr">Reasoning</label><div class="starter">Sentence starter is already in the box \u2014 finish the thought.</div><textarea id="cr" oninput="setCER('r',this.value)">${esc(v.r)}</textarea></div>`;
+}
+return h+`</div>`;
+}
+function setMC(v){ans[cur]=v;refreshQP();refreshChips();}
+function setCalc(k,v){const a=Array.isArray(ans[cur])?ans[cur]:new Array(QS[cur].rows.length).fill(undefined);a[k]=v;ans[cur]=a;refreshChips()}
+function setCER(k,v){const a=ans[cur]||Object.assign({},QS[cur].starters);a[k]=v;ans[cur]=a;refreshChips()}
+function refreshQP(){const q=$("#qp");if(q)q.innerHTML=qHTML(cur);}
+function refreshChips(){const c=$("#chips");if(c)c.innerHTML=chipsHTML()}
+
+/* =========================================================
+  NAVIGATION / SCREENS
+  ========================================================= */
+function setTab(t){tab=t;const s=$("#stim");if(s){s.innerHTML=stimHTML();}if(t==="sim")updateSim();}
+function go(i){cur=i;tab=QS[i].tab;if(QS[i].t==="cer"&&!ans[i])ans[i]=Object.assign({},QS[i].starters);screen="test";render()}
+function next(){if(cur<QS.length-1)go(cur+1);else openReview()}
+function prev(){if(cur>0)go(cur-1)}
+function toggleFlag(){flagged.has(cur)?flagged.delete(cur):flagged.add(cur);render(true)}
+function openReview(){screen="review";render()}
+function submitAll(){autoCheckCER();screen="results";window.scrollTo(0,0);render()}
+function reviseCER(){if(cerRevised)return;cur=QS.findIndex(q=>q.t==="cer");tab=QS[cur].tab;screen="reviseCER";render();window.scrollTo(0,0);}
+function saveRevision(){cerRevised=true;autoCheckCER();screen="results";render();window.scrollTo(0,0);}
+function autoCheckCER(){
+const cerIdx=QS.findIndex(q=>q.t==="cer"),kw=QS[cerIdx].kw,a=ans[cerIdx]||QS[cerIdx].starters;
+const all=((a.c||"")+" "+(a.e||"")+" "+(a.r||"")).toLowerCase();
+const claimOK=kw.claim.every(p=>p.test(all));
+const evidenceOK=kw.evidence.filter(p=>p.test(all)).length>=2;
+const reasoningOK=kw.reasoning.every(p=>p.test(all));
+selfChecks=[claimOK,evidenceOK,reasoningOK];
+}
+function fs(d){fsize=Math.min(24,Math.max(13,fsize+d*2));document.documentElement.style.setProperty("--fs",fsize+"px")}
+function startTest(){
+const sid=($("#sid")||{value:""}).value.trim(),f=($("#fn")||{value:""}).value.trim(),l=($("#ln")||{value:""}).value.trim(),p=($("#pd")||{value:""}).value.trim(),t=($("#tc")||{value:""}).value.trim();
+if(!sid||!f||!l||!p||!t){const e=$("#nmerr");if(e)e.style.display="block";return;}
+student={id:sid,first:f,last:l,period:p,teacher:t};
+go(0);
+}
+function sendToSheet(){
+const st=$("#sheetStatus");
+if(typeof SHEETS_WEBHOOK_URL==="undefined"||!SHEETS_WEBHOOK_URL||SHEETS_WEBHOOK_URL.indexOf("PASTE")>=0){
+ if(st)st.textContent="This activity isn't connected to your teacher's gradebook sheet yet.";
+ return;
+}
+const auto=autoTotal(),autoMax=QS.filter(q=>q.t!=="cer").length,n=selfChecks.filter(Boolean).length;
+const body=new URLSearchParams({studentId:student.id,firstName:student.first,lastName:student.last,period:student.period,teacher:student.teacher,activity:SHEETS_ACTIVITY_NAME,score:String(auto+n),total:String(autoMax+3),when:new Date().toString()});
+if(st)st.textContent="Sending...";
+fetch(SHEETS_WEBHOOK_URL,{method:"POST",mode:"no-cors",body:body})
+ .then(function(){if(st)st.textContent="Sent! Your teacher will see your score.";})
+ .catch(function(){if(st)st.textContent="Could not send \u2014 check your internet connection and try again.";});
+}
+function chipsHTML(){
+return QS.map((q,i)=>`<button class="chip ${i===cur?"cur":""} ${isAnswered(i)?"done":""} ${flagged.has(i)?"flag":""}" onclick="go(${i})" aria-label="Question ${i+1}${isAnswered(i)?", answered":""}${flagged.has(i)?", flagged":""}">${i+1}</button>`).join("");
+}
+function introHTML(){
+return `<div class="screen">
+ <h2>Cellular Respiration</h2>
+ <p>This is a short practice task (about 10 to 15 minutes) that works like a computer-based science test. Read the passage, study the diagram, graphs, and data, and run the simulation. Then answer ${QS.length} questions.</p>
+ <div class="phen"><b>Driving question:</b> Why do your leg muscles start to burn after just 10\u201320 seconds of an all-out sprint?</div>
+ <h3>Directions</h3>
+ <ul>
+  <li>Use the tabs on the left (Passage, Diagram, Graph, Data tables, Simulation) to find evidence.</li>
+  <li>Answer on the right. Use the numbered circles at the bottom to move between questions. Flag a question to come back to it.</li>
+  <li>Question 3 asks you to read values off the graphs. Question ${QS.length} asks for a written Claim, Evidence, and Reasoning response \u2014 sentence starters are already in each box.</li>
+  <li>When you finish, choose <b>Review and submit</b> to see your score and an explanation for each question.</li>
+ </ul>
+ <div class="namebox"><b>Student information</b> (required \u2014 used to record your score)
+  <div class="row">
+   <div class="fld"><label for="sid">Student ID</label><input id="sid" autocomplete="off" inputmode="numeric"></div>
+   <div class="fld"><label for="fn">First name</label><input id="fn" autocomplete="off"></div>
+   <div class="fld"><label for="ln">Last name</label><input id="ln" autocomplete="off"></div>
+   <div class="fld pd"><label for="pd">Period</label><input id="pd" autocomplete="off"></div>
+   <div class="fld"><label for="tc">Teacher's name</label><input id="tc" autocomplete="off"></div>
+  </div>
+  <div class="err" id="nmerr">Please fill in all four fields before starting.</div>
+ </div>
+ <button class="btn" onclick="startTest()">Begin practice task</button>
+</div>`;
+}
+function testHTML(){
+return `<div class="app">
+ <section class="stim" id="stim" aria-label="Stimulus">${stimHTML()}</section>
+ <section class="qp" id="qp" aria-label="Question">${qHTML(cur)}</section>
+</div>
+<div class="foot">
+ <div><button class="btn ghost" onclick="prev()" ${cur===0?"disabled":""}>Previous</button></div>
+ <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center">
+   <button class="flagbtn ${flagged.has(cur)?"on":""}" onclick="toggleFlag()">${flagged.has(cur)?"Flagged":"Flag for review"}</button>
+   <div class="chips" id="chips">${chipsHTML()}</div>
+ </div>
+ <div><button class="btn" onclick="next()">${cur===QS.length-1?"Review and submit":"Next"}</button></div>
+</div>`;
+}
+function reviseCERHTML(){
+return `<div class="app">
+ <section class="stim" id="stim" aria-label="Stimulus">${stimHTML()}</section>
+ <section class="qp" id="qp" aria-label="Question">${qHTML(cur)}</section>
+</div>
+<div class="foot">
+ <div></div>
+ <div style="text-align:center"><p class="small" style="margin:0"><b>Revising your response.</b> This is your only chance to change it.</p></div>
+ <div><button class="btn" onclick="saveRevision()">Save revision and return to results</button></div>
+</div>`;
+}
+function reviewHTML(){
+const un=QS.map((q,i)=>i).filter(i=>!isAnswered(i));
+return `<div class="screen">
+ <h2>Review your answers</h2>
+ <p>${un.length?`You have <b>${un.length}</b> unanswered question${un.length>1?"s":""}: ${un.map(i=>i+1).join(", ")}.`:"All questions have an answer."} Select a question to go back to it.</p>
+ <div class="rvlist">${QS.map((q,i)=>`<button class="rvitem ${isAnswered(i)?"done":"todo"}" onclick="go(${i})"><b>Question ${i+1}${flagged.has(i)?" (flagged)":""}</b>${isAnswered(i)?"Answered":"Not answered"}</button>`).join("")}</div>
+ <button class="btn" onclick="submitAll()">Submit and see results</button>
+ <button class="btn ghost" onclick="go(QS.length-1)" style="margin-left:8px">Back to task</button>
+</div>`;
+}
+
+/* =========================================================
+  SCORING + RESULTS
+  ========================================================= */
+function score(i){
+const q=QS[i],a=ans[i];
+if(a===undefined||a===null)return 0;
+if(q.t==="mc")return a===q.correct?1:0;
+if(q.t==="calc")return q.rows.every((r,k)=>{const n=parseFloat(a[k]);return !isNaN(n)&&Math.abs(n-r.key)<=r.tol;})?1:0;
+return 0;
+}
+function yourText(i){
+const q=QS[i],a=ans[i];
+if(a===undefined||a===null)return "No answer";
+if(q.t==="mc"){const o=q.opts.find(o=>o[0]===a);return o?esc(o[1]):"No answer";}
+if(q.t==="calc")return q.rows.map((r,k)=>r.label+": "+(a[k]!==undefined&&a[k]!==""?esc(a[k]):"blank")+" "+r.unit).join("<br>");
+return "";
+}
+function keyText(i){
+const q=QS[i];
+if(q.t==="mc"){const o=q.opts.find(o=>o[0]===q.correct);return o?esc(o[1]):"";}
+if(q.t==="calc")return q.rows.map(r=>r.label+": about "+r.key+" "+r.unit).join("<br>");
+return "";
+}
+function toggleSelf(k){selfChecks[k]=!selfChecks[k];const n=selfChecks.filter(Boolean).length;$("#cerscore").textContent=n;$("#totalscore").textContent=autoTotal()+n;}
+function autoTotal(){let t=0;QS.forEach((q,i)=>{if(q.t!=="cer")t+=score(i)});return t}
+function resultsHTML(){
+const auto=autoTotal(),autoMax=QS.filter(q=>q.t!=="cer").length,cerIdx=QS.findIndex(q=>q.t==="cer"),cq=QS[cerIdx],ca=ans[cerIdx]||cq.starters;
+const n=selfChecks.filter(Boolean).length;
+let h=`<div class="screen">
+ <h2>Results: ${esc(student.first)} ${esc(student.last)} \u2014 Period ${esc(student.period)} \u2014 ${esc(student.teacher)}</h2>
+ <div>Questions 1\u2013${autoMax} (scored automatically): <span class="score">${auto} / ${autoMax}</span></div>
+ <div>Question ${QS.length} (Claim, Evidence, Reasoning; auto-checked from keywords): <b><span id="cerscore">${n}</span> / 3</b></div>
+ <div>Total: <b><span id="totalscore">${auto+n}</span> / ${autoMax+3}</b></div>
+ <p class="noprint"><button class="btn" onclick="window.print()">Print or save as PDF</button> <button class="btn ghost" onclick="sendToSheet()">Send my score to my teacher</button></p>
+ <p class="sheetbox noprint" id="sheetStatus"></p>`;
+QS.forEach((q,i)=>{
+ if(q.t==="cer")return;
+ const ok=score(i)===1;
+ h+=`<div class="res ${ok?"good":"miss"}"><h4>Question ${i+1}<span class="tag ${ok?"good":"miss"}">${ok?"Correct":"Not yet"}</span></h4>
+   <div><b>Your answer:</b><br>${yourText(i)}</div>
+   ${ok?"":`<div style="margin-top:6px"><b>Correct answer:</b><br>${keyText(i)}</div>`}
+   <div class="model" style="margin-top:8px">${q.why}</div></div>`;
+});
+h+=`<div class="res self"><h4>Question ${QS.length}: Claim, Evidence, Reasoning</h4>
+  <div><b>Your claim:</b></div><div class="resp">${esc(ca.c||"(blank)")}</div>
+  <div><b>Your evidence:</b></div><div class="resp">${esc(ca.e||"(blank)")}</div>
+  <div><b>Your reasoning:</b></div><div class="resp">${esc(ca.r||"(blank)")}</div>
+  <div class="model" oncopy="return false" style="user-select:none"><b>Model response</b><br><b>Claim:</b> ${cq.model.c}<br><b>Evidence:</b> ${cq.model.e}<br><b>Reasoning:</b> ${cq.model.r}</div>
+  <p><b>Auto-checked.</b> These boxes were checked automatically based on keywords in your response (not a full reading). Compare your response to the model and adjust any box that isn't right.</p>
+  <div class="checks">${cq.checks.map((c,k)=>`<label><input type="checkbox" ${selfChecks[k]?"checked":""} onchange="toggleSelf(${k})"> ${c}</label>`).join("")}</div>
+  ${cerRevised?`<p class="small" style="margin-top:10px"><b>You have used your one revision for this response.</b></p>`:`<p class="noprint" style="margin-top:10px"><button class="btn ghost" onclick="reviseCER()">Revise your answer (one chance)</button></p>`}
+  </div>`;
+return h+`</div>`;
+}
+
+/* =========================================================
+  RENDER
+  ========================================================= */
+function render(keepScroll){
+const root=$("#root");
+let sy=0,qy=0;
+if(keepScroll){const s=$("#stim"),q=$("#qp");if(s)sy=s.scrollTop;if(q)qy=q.scrollTop;}
+root.innerHTML=screen==="intro"?introHTML():screen==="test"?testHTML():screen==="reviseCER"?reviseCERHTML():screen==="review"?reviewHTML():resultsHTML();
+if(keepScroll){const s=$("#stim"),q=$("#qp");if(s)s.scrollTop=sy;if(q)q.scrollTop=qy;}
+if((screen==="test"||screen==="reviseCER")&&tab==="sim")updateSim();
+root.style.overflow=(screen==="test"||screen==="reviseCER")?"hidden":"auto";
+}
+render();
+
+</script>
+</body>
+</html>
